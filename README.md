@@ -41,13 +41,12 @@ npm install
 
 ### 3. **Mapbox Token Setup**
 
-- Create a file at `src/config/mapbox.ts`:
+- Create a `.env` file:
 
 ```ts
-export const MAPBOX_TOKEN = "your_mapbox_access_token_here";
+export const VITE_MAPBOX_TOKEN = "your_mapbox_access_token_here";
 ```
 
-- _Never commit your real token!_ The `src/config/` folder is gitignored for safety.
 
 ### 4. **Run the app**
 
