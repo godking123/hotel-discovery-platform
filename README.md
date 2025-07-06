@@ -1,69 +1,100 @@
-# React + TypeScript + Vite
+# 🏨 Hotel Discovery Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, interactive hotel discovery platform built with React, TypeScript, Vite, and Mapbox. Explore hotels on a 3D map, filter by price, rating, amenities, and area, and enjoy a beautiful dark mode UI.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 🗺️ **Interactive Map**: 3D Mapbox map with dark mode, terrain, and building extrusion
+- 🏨 **Hotel Markers**: Clickable markers with detailed popups and all amenities
+- 🔍 **Filters**: Filter hotels by price, rating, amenities, and location
+- 📊 **Quick Stats**: Real-time stats for total hotels, average price, and top rating
+- 📍 **Popular Areas**: Quick navigation to popular Seattle neighborhoods
+- 🌙 **Dark Mode**: Consistent, elegant dark theme
+- ⚡ **Fast & Responsive**: Powered by Vite and optimized for performance
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📸 Screenshots
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+> _Add your screenshots here!_
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🚀 Getting Started
+
+### 1. **Clone the repository**
+
+```bash
+git clone https://github.com/godking123/hotel-discovery-platform.git
+cd hotel-discovery-platform
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. **Install dependencies**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### 3. **Mapbox Token Setup**
+
+- Create a file at `src/config/mapbox.ts`:
+
+```ts
+export const MAPBOX_TOKEN = "your_mapbox_access_token_here";
+```
+
+- _Never commit your real token!_ The `src/config/` folder is gitignored for safety.
+
+### 4. **Run the app**
+
+```bash
+npm run dev
+```
+
+The app will be available at [http://localhost:5173](http://localhost:5173)
+
+---
+
+## 🗂️ Folder Structure
+
+```
+hotel-discovery-platform/
+├── public/           # Static assets
+├── src/
+│   ├── assets/       # Images and icons
+│   ├── components/   # React components (Map, Sidebar, etc.)
+│   ├── config/       # Mapbox token (not tracked by git)
+│   ├── data/         # Hotel data (JSON, helpers)
+│   ├── index.css     # Tailwind & custom styles
+│   ├── App.tsx       # Main app
+│   └── main.tsx      # Entry point
+├── .gitignore
+├── package.json
+├── README.md
+└── ...
+```
+
+---
+
+## 🛠️ Tech Stack
+
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [Tailwind CSS](https://tailwindcss.com/)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+---
+
+## 📝 License
+
+MIT License. See [LICENSE](LICENSE) for details.
