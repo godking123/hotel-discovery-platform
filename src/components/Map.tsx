@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MAPBOX_TOKEN } from "../config/mapbox";
 import {
   seattleHotels,
   filterHotelsByArea,
@@ -11,7 +10,7 @@ import {
 import type { Hotel } from "../data/hotels";
 
 // Set the access token
-mapboxgl.accessToken = MAPBOX_TOKEN;
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 interface MapProps {
   mapView: string;
