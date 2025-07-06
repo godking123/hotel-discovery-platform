@@ -18,7 +18,9 @@ A modern, interactive hotel discovery platform built with React, TypeScript, Vit
 
 ## 📸 Screenshots
 
-> _Add your screenshots here!_
+![Map View](public/MapView.png)
+
+![Map View 2](public/MapView2.png)
 
 ---
 

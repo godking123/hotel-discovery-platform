@@ -187,13 +187,6 @@ const Map: React.FC<MapProps> = ({
     }
   }, [selectedArea, mapView, lng, lat, zoom]);
 
-  // Update markers when filteredHotels change
-  useEffect(() => {
-    if (map.current && map.current.isStyleLoaded()) {
-      addHotelMarkers(filteredHotels);
-    }
-  }, [filteredHotels]);
-
   
 
   const addHotelMarkers = (hotelsToDisplay: Hotel[]) => {
