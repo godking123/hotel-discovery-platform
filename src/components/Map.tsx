@@ -1,12 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import {
-  seattleHotels,
-  filterHotelsByArea,
-  filterHotelsByPrice,
-  filterHotelsByRating,
-} from "../data/hotels";
 import type { Hotel } from "../data/hotels";
 
 // Set the access token
@@ -15,7 +9,7 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 interface MapProps {
   mapView: string;
   selectedArea?: string;
-  activeFilter?: string;
+  filteredHotels: Hotel[]; // Add filteredHotels prop
   onMapLoad?: () => void;
   onHotelClick?: (hotel: Hotel) => void;
 }
@@ -23,41 +17,17 @@ interface MapProps {
 const Map: React.FC<MapProps> = ({
   mapView,
   selectedArea,
-  activeFilter,
   onMapLoad,
   onHotelClick,
+  filteredHotels,
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [lng] = useState(-122.3321); // Seattle coordinates
   const [lat] = useState(47.6062);
   const [zoom] = useState(12);
-  const [hotels, setHotels] = useState<Hotel[]>(seattleHotels);
 
-  // Filter hotels based on selected area and active filter
-  useEffect(() => {
-    let filteredHotels = seattleHotels;
-
-    if (selectedArea) {
-      filteredHotels = filterHotelsByArea(filteredHotels, selectedArea);
-    }
-
-    if (activeFilter && activeFilter !== "all") {
-      if (activeFilter === "rating") {
-        filteredHotels = filterHotelsByRating(filteredHotels);
-      } else if (activeFilter === "amenities") {
-        // Show hotels with more than 5 amenities
-        filteredHotels = filteredHotels.filter(
-          (hotel) => hotel.amenities.length > 5
-        );
-      } else {
-        filteredHotels = filterHotelsByPrice(filteredHotels, activeFilter);
-      }
-    }
-
-    setHotels(filteredHotels);
-  }, [selectedArea, activeFilter]);
-
+  // Initialize map
   useEffect(() => {
     if (map.current) return; // initialize map only once
 
@@ -122,10 +92,10 @@ const Map: React.FC<MapProps> = ({
         }
 
         // Add hotel markers
-        addHotelMarkers();
+        addHotelMarkers(filteredHotels);
       });
     }
-  }, []);
+  }, [mapView, lng, lat, zoom]);
 
   // Update map style when mapView changes
   useEffect(() => {
@@ -180,17 +150,17 @@ const Map: React.FC<MapProps> = ({
         }
 
         // Re-add hotel markers after style change
-        addHotelMarkers();
+        addHotelMarkers(filteredHotels);
       });
     }
-  }, [mapView]);
+  }, [mapView, filteredHotels]);
 
-  // Update markers when hotels change
+  // Update markers when filteredHotels change
   useEffect(() => {
     if (map.current && map.current.isStyleLoaded()) {
-      addHotelMarkers();
+      addHotelMarkers(filteredHotels);
     }
-  }, [hotels]);
+  }, [filteredHotels]);
 
   // Navigate to selected area or reset view
   useEffect(() => {
@@ -217,9 +187,16 @@ const Map: React.FC<MapProps> = ({
     }
   }, [selectedArea, mapView, lng, lat, zoom]);
 
+  // Update markers when filteredHotels change
+  useEffect(() => {
+    if (map.current && map.current.isStyleLoaded()) {
+      addHotelMarkers(filteredHotels);
+    }
+  }, [filteredHotels]);
+
   
 
-  const addHotelMarkers = () => {
+  const addHotelMarkers = (hotelsToDisplay: Hotel[]) => {
     if (!map.current) return;
 
     // Remove existing markers
@@ -227,7 +204,7 @@ const Map: React.FC<MapProps> = ({
     existingMarkers.forEach((marker) => marker.remove());
 
     // Add new markers
-    hotels.forEach((hotel) => {
+    hotelsToDisplay.forEach((hotel) => {
       // Create marker element
       const markerEl = document.createElement("div");
       markerEl.className = "hotel-marker";
@@ -251,28 +228,28 @@ const Map: React.FC<MapProps> = ({
         className: "hotel-popup",
         closeButton: false, // Remove the X button
       }).setHTML(`
-        <div class="p-4 bg-gray-900 text-white rounded-lg shadow-xl max-w-sm border border-gray-700">
-          <h3 class="font-bold text-lg mb-2 text-blue-400">${hotel.name}</h3>
+        <div class="p-4 bg-gray-800 text-gray-100 rounded-lg shadow-2xl max-w-sm border border-gray-700 font-['League_Spartan']">
+          <h3 class="font-bold text-xl mb-2 text-white">${hotel.name}</h3>
           <p class="text-sm text-gray-300 mb-3">${hotel.address}</p>
           <div class="flex justify-between items-center mb-3">
-            <span class="text-green-400 font-semibold">$${price.toLocaleString()}/night</span>
-            <span class="text-yellow-400 font-semibold">${hotel.rating}★</span>
+            <span class="text-emerald-400 font-semibold text-lg">${price.toLocaleString()}/night</span>
+            <span class="text-amber-400 font-semibold text-lg">${hotel.rating} ★</span>
           </div>
           <p class="text-xs text-gray-400 mb-3">${hotel.room_type}</p>
           <div class="mb-3">
-            <h4 class="text-sm font-semibold text-gray-200 mb-2">All Amenities (${
+            <h4 class="text-sm font-semibold text-gray-200 mb-2">Amenities (${
               hotel.amenities.length
             }):</h4>
             <div class="flex flex-wrap gap-1 max-h-32 overflow-y-auto">
               ${hotel.amenities
                 .map(
                   (amenity) =>
-                    `<span class="px-2 py-1 bg-blue-600 text-xs rounded-full text-white">${amenity}</span>`
+                    `<span class="px-2 py-1 bg-indigo-600 text-xs rounded-full text-white">${amenity}</span>`
                 )
                 .join("")}
             </div>
           </div>
-          <div class="flex justify-between items-center text-xs text-gray-400">
+          <div class="flex justify-between items-center text-xs text-gray-400 mt-3 pt-3 border-t border-gray-700">
             <span>${hotel.star_rating}★ Hotel</span>
             <span>${hotel.review_count} reviews</span>
           </div>

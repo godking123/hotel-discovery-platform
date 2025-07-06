@@ -40,14 +40,15 @@ function App() {
   const [mapView, setMapView] = useState("map"); // map, satellite, terrain
   const [activeFilter, setActiveFilter] = useState("all"); // all, budget, luxury
   const [selectedArea, setSelectedArea] = useState("");
+  const [maxPrice, setMaxPrice] = useState(2000); // Max price for filter
 
-  // Calculate quick stats based on current filters
-  const quickStats = useMemo(() => {
-    let filteredHotels = seattleHotels;
+  // Filter hotels based on current filters
+  const filteredHotels = useMemo(() => {
+    let currentHotels = seattleHotels;
 
     if (selectedArea) {
       // Filter by area (simplified for now)
-      filteredHotels = seattleHotels.filter((hotel) => {
+      currentHotels = seattleHotels.filter((hotel) => {
         // Simple area filtering based on coordinates
         const areaBounds = {
           "Pike Place Market": {
@@ -74,32 +75,42 @@ function App() {
 
     if (activeFilter && activeFilter !== "all") {
       if (activeFilter === "rating") {
-        filteredHotels = filteredHotels.filter((hotel) => hotel.rating >= 8.5);
+        currentHotels = currentHotels.filter((hotel) => hotel.rating >= 8.5);
       } else if (activeFilter === "amenities") {
-        filteredHotels = filteredHotels.filter(
+        currentHotels = currentHotels.filter(
           (hotel) => hotel.amenities.length > 5
         );
       } else if (activeFilter === "budget") {
-        filteredHotels = filteredHotels.filter((hotel) => {
+        currentHotels = currentHotels.filter((hotel) => {
           const price =
             typeof hotel.price_per_night === "string"
               ? parseInt(hotel.price_per_night)
               : hotel.price_per_night;
           return price <= 800;
         });
-      } else if (activeFilter === "luxury") {
-        filteredHotels = filteredHotels.filter((hotel) => {
-          const price =
-            typeof hotel.price_per_night === "string"
-              ? parseInt(hotel.price_per_night)
-              : hotel.price_per_night;
-          return price >= 1000;
-        });
+      } else if (activeFilter === "cancellation") {
+        currentHotels = currentHotels.filter(
+          (hotel) => hotel.free_cancellation === true
+        );
       }
     }
 
+    // Apply max price filter
+    currentHotels = currentHotels.filter((hotel) => {
+      const price =
+        typeof hotel.price_per_night === "string"
+          ? parseInt(hotel.price_per_night)
+          : hotel.price_per_night;
+      return price <= maxPrice;
+    });
+
+    return currentHotels;
+  }, [selectedArea, activeFilter, maxPrice]);
+
+  // Calculate quick stats based on filtered hotels
+  const quickStats = useMemo(() => {
     return calculateQuickStats(filteredHotels);
-  }, [selectedArea, activeFilter]);
+  }, [filteredHotels]);
 
   const handleMapViewChange = (view: string) => {
     setMapView(view);
@@ -133,7 +144,7 @@ function App() {
       <aside className="w-60 h-full bg-gray-800 border-r border-gray-700 shadow-lg flex flex-col overflow-y-auto overflow-x-hidden relative flex-shrink-0">
         {/* Map View Buttons */}
         <div className="p-6 border-b border-gray-700 text-center">
-  <h3 className="text-sm font-semibold text-gray-300 mb-4">Map View</h3>
+  <h3 className="text-lg font-semibold text-gray-300 mb-4">Map View</h3>
   <div className="flex justify-center space-x-3">
             {/* Map */}
             <Tooltip text="Street map view">
@@ -239,7 +250,7 @@ function App() {
 
         {/* Filters */}
         <div className="p-6 border-b border-gray-700 text-center">
-          <h3 className="text-sm font-semibold text-gray-300 mb-4">Filters</h3>
+          <h3 className="text-lg font-semibold text-gray-300 mb-4">Filters</h3>
           <div className="flex justify-center space-x-3 mb-3">
             {/* All */}
             <Tooltip text="Show all hotels">
@@ -334,16 +345,14 @@ function App() {
                   activeFilter === "rating"
                     ? "bg-green-600 border-green-500"
                     : "bg-gray-700 border-gray-600 hover:bg-gray-600"
-                }`}
-              >
+                }`}>
                 <svg
                   className={`w-5 h-5 ${
                     activeFilter === "rating" ? "text-white" : "text-gray-300"
                   }`}
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -363,8 +372,7 @@ function App() {
                   activeFilter === "amenities"
                     ? "bg-green-600 border-green-500"
                     : "bg-gray-700 border-gray-600 hover:bg-gray-600"
-                }`}
-              >
+                }`}>
                 <svg
                   className={`w-5 h-5 ${
                     activeFilter === "amenities"
@@ -373,8 +381,7 @@ function App() {
                   }`}
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -384,47 +391,54 @@ function App() {
                 </svg>
               </motion.button>
             </Tooltip>
-            {/* Location */}
-            <Tooltip text="Hotels near specific locations">
+            {/* Free Cancellation */}
+            <Tooltip text="Free cancellation available">
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 whileHover={{ scale: 1.2 }}
-                onClick={() => handleFilterChange("location")}
+                onClick={() => handleFilterChange("cancellation")}
                 className={`w-12 h-12 rounded-xl border shadow-sm flex items-center justify-center cursor-pointer transition-transform duration-100 ${
-                  activeFilter === "location"
+                  activeFilter === "cancellation"
                     ? "bg-green-600 border-green-500"
                     : "bg-gray-700 border-gray-600 hover:bg-gray-600"
-                }`}
-              >
+                }`}>
                 <svg
                   className={`w-5 h-5 ${
-                    activeFilter === "location" ? "text-white" : "text-gray-300"
+                    activeFilter === "cancellation"
+                      ? "text-white"
+                      : "text-gray-300"
                   }`}
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                   />
                 </svg>
               </motion.button>
             </Tooltip>
           </div>
+          <div className="mt-4">
+            <input
+              type="range"
+              min="0"
+              max="2000"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            />
+            <h4 className="text-sm font-semibold text-gray-300 mt-2 text-center">
+              Max Price: ${maxPrice}
+            </h4>
+          </div>
         </div>
 
         {/* Quick Stats */}
         <div className="p-6 border-b border-gray-700">
-          <h3 className="text-sm font-semibold text-gray-300 mb-4">
+          <h3 className="text-lg font-semibold text-gray-300 mb-4">
             Quick Stats
           </h3>
           <div className="space-y-3">
@@ -455,7 +469,7 @@ function App() {
 
         {/* Popular Areas */}
         <div className="p-6 flex-1 text-center">
-          <h3 className="text-sm font-semibold text-gray-300 mb-4">
+          <h3 className="text-lg font-semibold text-gray-300 mb-4">
             Popular Areas
           </h3>
           <div className="space-y-3 flex flex-col items-center">
@@ -488,7 +502,7 @@ function App() {
         <Map
           mapView={mapView}
           selectedArea={selectedArea}
-          activeFilter={activeFilter}
+          filteredHotels={filteredHotels}
           onMapLoad={handleMapLoad}
           onHotelClick={(hotel) => {
             console.log("Hotel clicked:", hotel.name);

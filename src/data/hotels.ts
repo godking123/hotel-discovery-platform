@@ -13,6 +13,7 @@ export interface Hotel {
   image_url: string;
   room_type: string;
   amenities: string[];
+  free_cancellation?: boolean;
 }
 
 // Import the real hotel data
