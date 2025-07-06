@@ -193,20 +193,32 @@ const Map: React.FC<MapProps> = ({
     }
   }, [hotels]);
 
-  // Navigate to selected area
+  // Navigate to selected area or reset view
   useEffect(() => {
-    if (map.current && selectedArea) {
-      const areaCoordinates = getAreaCoordinates(selectedArea);
-      if (areaCoordinates) {
+    if (map.current) {
+      if (selectedArea) {
+        const areaCoordinates = getAreaCoordinates(selectedArea);
+        if (areaCoordinates) {
+          map.current.flyTo({
+            center: areaCoordinates,
+            zoom: 16, // Closer zoom for better 3D view
+            pitch: mapView === "map" ? 60 : 0,
+            duration: 2000,
+          });
+        }
+      } else {
+        // If no area is selected, reset to the default view
         map.current.flyTo({
-          center: areaCoordinates,
-          zoom: 16, // Closer zoom for better 3D view
+          center: [lng, lat],
+          zoom: zoom,
           pitch: mapView === "map" ? 60 : 0,
           duration: 2000,
         });
       }
     }
-  }, [selectedArea, mapView]);
+  }, [selectedArea, mapView, lng, lat, zoom]);
+
+  
 
   const addHotelMarkers = () => {
     if (!map.current) return;

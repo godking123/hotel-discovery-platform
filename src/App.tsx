@@ -132,9 +132,9 @@ function App() {
       {/* Sidebar */}
       <aside className="w-60 h-full bg-gray-800 border-r border-gray-700 shadow-lg flex flex-col overflow-y-auto overflow-x-hidden relative flex-shrink-0">
         {/* Map View Buttons */}
-        <div className="p-6 border-b border-gray-700">
-          <h3 className="text-sm font-semibold text-gray-300 mb-4">Map View</h3>
-          <div className="flex space-x-3">
+        <div className="p-6 border-b border-gray-700 text-center">
+  <h3 className="text-sm font-semibold text-gray-300 mb-4">Map View</h3>
+  <div className="flex justify-center space-x-3">
             {/* Map */}
             <Tooltip text="Street map view">
               <motion.button
@@ -238,9 +238,9 @@ function App() {
         </div>
 
         {/* Filters */}
-        <div className="p-6 border-b border-gray-700">
+        <div className="p-6 border-b border-gray-700 text-center">
           <h3 className="text-sm font-semibold text-gray-300 mb-4">Filters</h3>
-          <div className="flex space-x-3 mb-3">
+          <div className="flex justify-center space-x-3 mb-3">
             {/* All */}
             <Tooltip text="Show all hotels">
               <motion.button
@@ -251,16 +251,14 @@ function App() {
                   activeFilter === "all"
                     ? "bg-green-600 border-green-500"
                     : "bg-gray-700 border-gray-600 hover:bg-gray-600"
-                }`}
-              >
+                }`}>
                 <svg
                   className={`w-5 h-5 ${
                     activeFilter === "all" ? "text-white" : "text-gray-300"
                   }`}
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -280,16 +278,14 @@ function App() {
                   activeFilter === "budget"
                     ? "bg-green-600 border-green-500"
                     : "bg-gray-700 border-gray-600 hover:bg-gray-600"
-                }`}
-              >
+                }`}>
                 <svg
                   className={`w-5 h-5 ${
                     activeFilter === "budget" ? "text-white" : "text-gray-300"
                   }`}
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -309,16 +305,14 @@ function App() {
                   activeFilter === "luxury"
                     ? "bg-green-600 border-green-500"
                     : "bg-gray-700 border-gray-600 hover:bg-gray-600"
-                }`}
-              >
+                }`}>
                 <svg
                   className={`w-5 h-5 ${
                     activeFilter === "luxury" ? "text-white" : "text-gray-300"
                   }`}
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -329,7 +323,7 @@ function App() {
               </motion.button>
             </Tooltip>
           </div>
-          <div className="flex space-x-3">
+          <div className="flex justify-center space-x-3">
             {/* Rating */}
             <Tooltip text="Top rated hotels (8.5+ stars)">
               <motion.button
@@ -460,11 +454,11 @@ function App() {
         </div>
 
         {/* Popular Areas */}
-        <div className="p-6 flex-1">
+        <div className="p-6 flex-1 text-center">
           <h3 className="text-sm font-semibold text-gray-300 mb-4">
             Popular Areas
           </h3>
-          <div className="space-y-3">
+          <div className="space-y-3 flex flex-col items-center">
             {[
               "Pike Place Market",
               "Belltown",
@@ -477,12 +471,10 @@ function App() {
                   whileTap={{ scale: 0.95 }}
                   whileHover={{ scale: 1.02 }}
                   onClick={() => handleAreaSelect(area)}
-                  className={`w-full text-center px-4 py-3 text-sm font-medium rounded-xl border transition-all duration-100 cursor-pointer ${
-                    selectedArea === area
+                  className={`w-48 text-center px-4 py-3 text-sm font-medium rounded-xl border transition-all duration-100 cursor-pointer ${                    selectedArea === area
                       ? "bg-blue-600 border-blue-500 text-white"
                       : "bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600"
-                  }`}
-                >
+                  }`}>
                   {area}
                 </motion.button>
               </Tooltip>
