@@ -19,6 +19,7 @@ dist-ssr
 .DS_Store
 *.suo
 /config
+src/config/
 *.ntvs*
 *.njsproj
 *.sln
